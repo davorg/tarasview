@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use feature 'say';
+
+use JSON;
+
+opendir my $d, "docs/img" or die $!;
+my @p = sort grep { !/^\./ } readdir $d;
+
+open my $f, '>', "docs/imgs.json" or dir $!;
+say $f JSON->new->pretty->encode({imgs => \@p});

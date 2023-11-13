@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet"> <!-- Add this line -->
+        <style>
+            body {
+                font-family: 'DM Serif Display', serif; /* Use the font here */
+            }
+            #bg1, #bg2 {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center center;
+                transition: opacity 1s;
+            }
+            #bg1 {
+                z-index: 2;
+            }
+            #bg2 {
+                z-index: 1;
+            }
+            #date {
+               position: fixed;
+                bottom: 10px;
+                left: 10px;
+                color: white;
+                font-size: 20px; /* Increase the font size */
+                background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent black background */
+                padding: 10px; /* Add some padding */
+                border-radius: 5px; /* Optional: Add rounded corners */
+                z-index: 100;
+            }
+            #title {
+                position: fixed;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: white;
+                font-size: 50px;
+                background-color: rgba(0, 0, 0, 0.5);
+                padding: 10px;
+                border-radius: 5px;
+                z-index: 100;
+            }
+        </style>
+        <title>Tara's View</title>
+        <script>
+window.onload = function() {
+    fetch('imgs.json')
+        .then(response => response.json())
+        .then(data => {
+            let currentIndex = Math.floor(Math.random() * data.imgs.length);
+            let bg1 = document.getElementById('bg1');
+            let bg2 = document.getElementById('bg2');
+            let dateDiv = document.getElementById('date');
+
+            function updateImageAndDate() {
+                let currentImg = data.imgs[currentIndex];
+                let date = new Date(currentImg.split('.')[0]); // convert the string to a Date object
+                let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                dateDiv.textContent = date.toLocaleDateString(undefined, options); // format the date
+                if (bg1.style.zIndex == 2) {
+                    bg1.style.backgroundImage = `url(/img/${currentImg})`;
+                    bg1.style.opacity = 1;
+                    bg2.style.opacity = 0;
+                    bg1.style.zIndex = 1;
+                    bg2.style.zIndex = 2;
+                } else {
+                    bg2.style.backgroundImage = `url(/img/${currentImg})`;
+                    bg2.style.opacity = 1;
+                    bg1.style.opacity = 0;
+                    bg2.style.zIndex = 1;
+                    bg1.style.zIndex = 2;
+                }
+                currentIndex = (currentIndex + 1) % data.imgs.length;
+            }
+
+            updateImageAndDate(); // Call the function once to update the image and date immediately
+            setInterval(updateImageAndDate, 5000); // Then start the interval
+        })
+        .catch(error => console.error('Error:', error));
+};
+        </script>
+    </head>
+    <body>
+        <div id="title">Tara's View</div>
+        <div id="bg1"></div>
+        <div id="bg2"></div>
+        <div id="date"></div>
+    </body>
+</html>
